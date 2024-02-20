@@ -1,6 +1,9 @@
 import { httpServer } from "./src/http_server/index.js";
+import { websocketServer } from "./src/ws_server/index.js";
+import { HTTP_PORT, WS_PORT } from "./src/constants.js";
 
-const HTTP_PORT = 8181;
+const wsServer = new websocketServer();
 
-console.log(`Start static http server on the ${HTTP_PORT} port!`);
 httpServer.listen(HTTP_PORT);
+wsServer.listen(WS_PORT);
+
