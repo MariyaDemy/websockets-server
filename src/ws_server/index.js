@@ -33,7 +33,8 @@ class websocketServer {
         );
       });
 
-      ws.on('close', () => {
+      ws.on('close', (err) => {
+        console.log('closed', err)
         console.log(`WebSocket with id=${ws.id} disconnected`);
       });
 

@@ -24,13 +24,22 @@ class WSMessageHandler {
             id: 0,
         };
 
-        response.data = JSON.stringify({
+        response.data = {
             name: user.name,
             index: user.id,
             error: false,
             errorText: '',
-        });
+        };
 
+        try {
+            if(user.password !== data.password){
+                throw new Error('Your password is incorrect. Try again');
+            }
+        } catch (error) {
+            response.data = {...response.data, error:true, errorText: error.message};
+        }
+
+        response.data = JSON.stringify(response.data);
         return response;
     }
 }
