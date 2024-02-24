@@ -1,7 +1,10 @@
 {
-    "name": "ws_task",
+    "name": "ws-server_task",
     "version": "1.0.0",
-    "description": "Template for the WebSocket remote control task",
+    "description": "WebSocket server for a battleship game",
+    "engines": {
+        "node": ">=20.0.0"
+    },
     "main": "index.js",
     "type": "module",
     "scripts": {
