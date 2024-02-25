@@ -34,13 +34,23 @@ class websocketServer {
         const command = message.type;
         console.log('Command:', command);
 
-        const response: ResponseMessage = this.wsMessageHandler.handleMessage(
+        const response: ResponseMessage[] = this.wsMessageHandler.handleMessage(
           command,
           message.data,
+          customWS.id,
         );
-        ws.send(JSON.stringify(response), () =>
-          console.log('Result:', response),
-        );
+
+        response.forEach((res) => {
+          if (res.type === 'update_room' || res.type === 'update_winners') {
+            wsServer.clients.forEach((client) =>
+              client.send(JSON.stringify(res), () =>
+                console.log('Result:', res),
+              ),
+            );
+          } else {
+            ws.send(JSON.stringify(res), () => console.log('Result:', res));
+          }
+        });
       });
 
       ws.on('close', () => {

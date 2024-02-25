@@ -7,30 +7,42 @@ class WSMessageHandler {
     this.database = database;
   }
 
-  handleMessage(command: RequestCommand, data: string) {
+  handleMessage(
+    command: RequestCommand,
+    data: string,
+    wsId: number,
+  ): ResponseMessage[] {
+    if (data === '') data = '""'; //to JSON.parse not fail
     const message = JSON.parse(data);
     const defaultResponse: ResponseMessage = {
       type: 'Unknown command',
-      data: {},
+      data: '',
       id: 0,
     };
     switch (command) {
       case 'reg':
-        return this.loginUser(message);
+        return [
+          this.loginUser(message, wsId),
+          this.updateRoom(),
+          this.updateWinners(),
+        ];
+      case 'create_room':
+        this.createRoom(wsId);
+        return [this.updateRoom()];
     }
-    return defaultResponse;
+    return [defaultResponse];
   }
 
-  loginUser(data: LoginUserData) {
-    let user = this.database.getUser(data.name);
+  loginUser(data: LoginUserData, wsId: number): ResponseMessage {
+    let user = this.database.getUser(data.name, wsId);
     if (!user) {
-      user = this.database.createUser(data);
+      user = this.database.createUser(data, wsId);
     }
 
     const response: ResponseMessage = {
       type: 'reg',
-      id: 0,
       data: {},
+      id: 0,
     };
 
     response.data = {
@@ -53,6 +65,32 @@ class WSMessageHandler {
         };
       }
     }
+
+    response.data = JSON.stringify(response.data);
+    return response;
+  }
+
+  updateRoom(): ResponseMessage {
+    const response: ResponseMessage = {
+      type: 'update_room',
+      data: this.database.getRooms(),
+      id: 0,
+    };
+
+    response.data = JSON.stringify(response.data);
+    return response;
+  }
+
+  createRoom(wsId: number) {
+    this.database.createRoom(wsId);
+  }
+
+  updateWinners(): ResponseMessage {
+    const response: ResponseMessage = {
+      type: 'update_winners',
+      data: this.database.getWinners(),
+      id: 0,
+    };
 
     response.data = JSON.stringify(response.data);
     return response;

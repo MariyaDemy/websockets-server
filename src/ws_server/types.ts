@@ -81,7 +81,7 @@ interface RequestMessage {
 
 interface ResponseMessage {
   type: ResponseCommand;
-  data: ResponseMessageData | Room[] | string;
+  data: ResponseMessageData | Room[] | Winner[] | string;
   id: 0;
 }
 
@@ -89,6 +89,11 @@ interface LoginUserData {
   name: string;
   password: string;
 }
+
+type Winner = {
+  name: string;
+  wins: number;
+};
 
 export {
   User,
@@ -98,4 +103,6 @@ export {
   RequestCommand,
   RequestMessageData,
   LoginUserData,
+  Room,
+  Winner,
 };
