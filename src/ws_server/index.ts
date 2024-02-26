@@ -38,10 +38,12 @@ class websocketServer {
           command,
           message.data,
           customWS.id,
+          wsServer.clients as unknown as Set<CustomWebSocket>,
         );
 
         response.forEach((res) => {
-          if (res.type === 'update_room' || res.type === 'update_winners') {
+          const responseForAllTypes = ['update_room', 'update_winners'];
+          if (responseForAllTypes.includes(res.type)) {
             wsServer.clients.forEach((client) =>
               client.send(JSON.stringify(res), () =>
                 console.log('Result:', res),

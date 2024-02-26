@@ -1,9 +1,9 @@
+import WebSocket from "ws";
 interface User {
-  id: number;
+  index: number;
   name: string;
   password: string;
 }
-
 interface CustomWebSocket extends WebSocket {
   id: number;
 }
@@ -35,7 +35,6 @@ interface Ship {
   length: number;
   type: 'small' | 'medium' | 'large' | 'huge';
 }
-
 interface RequestMessageData {
   name?: string;
   password?: string;
@@ -46,7 +45,6 @@ interface RequestMessageData {
   x?: number;
   y?: number;
 }
-
 interface ResponseMessageData {
   name?: string;
   index?: number;
@@ -78,13 +76,11 @@ interface RequestMessage {
   data: string;
   id: 0;
 }
-
 interface ResponseMessage {
   type: ResponseCommand;
   data: ResponseMessageData | Room[] | Winner[] | string;
   id: 0;
 }
-
 interface LoginUserData {
   name: string;
   password: string;
@@ -93,6 +89,20 @@ interface LoginUserData {
 type Winner = {
   name: string;
   wins: number;
+};
+
+type addUserToRoomData = {
+  indexRoom:number;
+}
+
+type Player = {
+  name:string,
+  index:number,
+}
+
+type Game = {
+  idGame:number,
+  players: Player[],
 };
 
 export {
@@ -105,4 +115,8 @@ export {
   LoginUserData,
   Room,
   Winner,
+  addUserToRoomData,
+  RoomUser,
+  Game,
+  Player,
 };

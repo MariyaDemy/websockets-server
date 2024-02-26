@@ -1,8 +1,10 @@
-import { User, LoginUserData, Room, Winner } from './types.ts';
+import { User, LoginUserData, Room, Winner, RoomUser, Game, Player } from './types.ts';
 
 class Database {
   users = new Map<number, User>();
   rooms = new Map<number, Room>();
+  games = new Map<number, Game>();
+  players = new Map<number, Player>();
   winners = new Map<string, Winner>();
 
   constructor() {}
@@ -29,8 +31,23 @@ class Database {
     return this.users.get(wsId);
   }
 
-  getRoom(userId: number) {
+  getRoomByUserId(userId: number) {
     return this.rooms.get(userId);
+  }
+
+  getRoomKeyByRoomId(roomId:number){
+    for (const [key, room] of this.rooms.entries()) {
+      if (room.roomId === roomId) {
+        return key;
+      }
+    }
+  }
+
+  getRoomByRoomId(roomId:number){
+   const userId = this.getRoomKeyByRoomId(roomId);
+   if(userId){
+    return this.getRoomByUserId(userId);
+   }
   }
 
   getRooms() {
@@ -44,7 +61,7 @@ class Database {
   createUser({ name, password }: LoginUserData, wsId: number) {
     name = name.trim();
     this.users.set(wsId, {
-      id: this.users.size + 1,
+      index: this.users.size + 1,
       name,
       password,
     });
@@ -52,9 +69,9 @@ class Database {
   }
 
   createRoom(wsId: number) {
-    const { name, id: userId } = this.users.get(wsId) as User;
+    const { name, index: userId } = this.users.get(wsId) as User;
     //check if there is no room for this user yet: one user = one room
-    const roomExists = this.getRoom(userId);
+    const roomExists = this.getRoomByUserId(userId);
     if (!roomExists) {
       this.rooms.set(userId, {
         roomId: this.rooms.size + 1,
@@ -66,6 +83,31 @@ class Database {
         ],
       });
     }
+  }
+
+  addUserToRoom(indexRoom:number, user:RoomUser){
+    const room = this.getRoomByRoomId(indexRoom);
+    const roomKey = this.getRoomKeyByRoomId(indexRoom);
+    if(room && roomKey){
+      room.roomUsers.push(user);
+      this.rooms.delete(roomKey);
+    }
+  }
+
+  getGames() {
+    return Array.from(this.games.values());
+  }
+
+  getGame(roomId:number){
+    return this.games.get(roomId);
+  }
+
+  createGame({roomId, roomUsers}: Room) {
+    this.games.set(roomId, {
+      idGame: this.games.size + 1,
+      players: [...roomUsers],
+    });
+    return this.getGame(roomId);
   }
 }
 
