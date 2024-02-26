@@ -1,4 +1,12 @@
-import { User, LoginUserData, Room, Winner, RoomUser, Game, Player } from './types.ts';
+import {
+  User,
+  LoginUserData,
+  Room,
+  Winner,
+  RoomUser,
+  Game,
+  Player,
+} from './types.ts';
 
 class Database {
   users = new Map<number, User>();
@@ -35,7 +43,7 @@ class Database {
     return this.rooms.get(userId);
   }
 
-  getRoomKeyByRoomId(roomId:number){
+  getRoomKeyByRoomId(roomId: number) {
     for (const [key, room] of this.rooms.entries()) {
       if (room.roomId === roomId) {
         return key;
@@ -43,11 +51,11 @@ class Database {
     }
   }
 
-  getRoomByRoomId(roomId:number){
-   const userId = this.getRoomKeyByRoomId(roomId);
-   if(userId){
-    return this.getRoomByUserId(userId);
-   }
+  getRoomByRoomId(roomId: number) {
+    const userId = this.getRoomKeyByRoomId(roomId);
+    if (userId) {
+      return this.getRoomByUserId(userId);
+    }
   }
 
   getRooms() {
@@ -85,10 +93,10 @@ class Database {
     }
   }
 
-  addUserToRoom(indexRoom:number, user:RoomUser){
+  addUserToRoom(indexRoom: number, user: RoomUser) {
     const room = this.getRoomByRoomId(indexRoom);
     const roomKey = this.getRoomKeyByRoomId(indexRoom);
-    if(room && roomKey){
+    if (room && roomKey) {
       room.roomUsers.push(user);
       this.rooms.delete(roomKey);
     }
@@ -98,11 +106,11 @@ class Database {
     return Array.from(this.games.values());
   }
 
-  getGame(roomId:number){
+  getGame(roomId: number) {
     return this.games.get(roomId);
   }
 
-  createGame({roomId, roomUsers}: Room) {
+  createGame({ roomId, roomUsers }: Room) {
     this.games.set(roomId, {
       idGame: this.games.size + 1,
       players: [...roomUsers],

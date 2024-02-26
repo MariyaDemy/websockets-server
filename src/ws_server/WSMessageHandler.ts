@@ -1,5 +1,14 @@
 import { database } from './Database.ts';
-import { ResponseMessage, RequestCommand, LoginUserData, addUserToRoomData, User, RoomUser, Room, CustomWebSocket } from './types.ts';
+import {
+  ResponseMessage,
+  RequestCommand,
+  LoginUserData,
+  addUserToRoomData,
+  User,
+  RoomUser,
+  Room,
+  CustomWebSocket,
+} from './types.ts';
 
 class WSMessageHandler {
   database: typeof database;
@@ -99,11 +108,15 @@ class WSMessageHandler {
     return response;
   }
 
-  addUserToRoom({indexRoom}:addUserToRoomData, wsId:number, wsConnections:Set<CustomWebSocket>):ResponseMessage[] {
-    const {name, index:userId} = this.database.users.get(wsId) as User;
+  addUserToRoom(
+    { indexRoom }: addUserToRoomData,
+    wsId: number,
+    wsConnections: Set<CustomWebSocket>,
+  ): ResponseMessage[] {
+    const { name, index: userId } = this.database.users.get(wsId) as User;
     const room = this.database.getRoomByRoomId(indexRoom) as Room;
-    if(room?.roomUsers[0].index !== userId){
-      const user:RoomUser = {name, index:userId};
+    if (room?.roomUsers[0].index !== userId) {
+      const user: RoomUser = { name, index: userId };
       this.database.addUserToRoom(indexRoom, user);
       this.createGame(room, wsConnections);
       return [this.updateRoom()];
@@ -111,7 +124,7 @@ class WSMessageHandler {
     return [this.updateRoom()];
   }
 
-  createGame(room: Room, WSConnections:Set<CustomWebSocket>){
+  createGame(room: Room, WSConnections: Set<CustomWebSocket>) {
     const response: ResponseMessage = {
       type: 'create_game',
       data: {},
@@ -119,12 +132,16 @@ class WSMessageHandler {
     };
 
     const game = this.database.createGame(room);
-    if(!game) return response;
+    if (!game) return response;
     //user who has sent add_user_to_room request is always added second to the game
     const player1Id = game.players[1].index;
     const player2Id = game.players[0].index;
-    const player1WebSocketId = this.database.getWebSocketIdByName(game.players[1].name);
-    const player2WebSocketId = this.database.getWebSocketIdByName(game.players[0].name);
+    const player1WebSocketId = this.database.getWebSocketIdByName(
+      game.players[1].name,
+    );
+    const player2WebSocketId = this.database.getWebSocketIdByName(
+      game.players[0].name,
+    );
 
     const response4Player1 = Object.assign({}, response);
     response4Player1.data = {
@@ -141,12 +158,12 @@ class WSMessageHandler {
     response4Player2.data = JSON.stringify(response4Player2.data);
 
     WSConnections.forEach((socket) => {
-      if(socket.id === player1WebSocketId){
+      if (socket.id === player1WebSocketId) {
         socket.send(JSON.stringify(response4Player1), () => {
           console.log('Result:', response4Player1);
         });
       }
-      if(socket.id === player2WebSocketId){
+      if (socket.id === player2WebSocketId) {
         socket.send(JSON.stringify(response4Player2), () => {
           console.log('Result:', response4Player2);
         });

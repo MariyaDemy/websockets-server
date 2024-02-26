@@ -4,14 +4,13 @@
   "plugins": ["@typescript-eslint/eslint-plugin", "prettier", "@typescript-eslint"],
   "parserOptions": {
     "ecmaVersion":2020,
-    "sourceType": "module",
-    "project": "tsconfig.json"
+    "sourceType": "module"
   },
   "env": {
     "es6": true,
     "node": true
   },
-  "ignorePatterns": [".eslintrc"],
+  "ignorePatterns": [".eslintrc", "src/http_server/*"],
   "rules": {
     "@typescript-eslint/no-explicit-any": 2,
     "semi": "error",
@@ -20,5 +19,5 @@
     "no-useless-return": "error",
     "no-duplicate-imports": "error",
     "prefer-const": "error"
-  }
+  },
 }

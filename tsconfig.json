@@ -11,6 +11,6 @@
       "noEmit": true,
       "allowImportingTsExtensions": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node-modules"],
+    "include": ["src/ws_server/*"],
+    "exclude": ["node-modules", "src/http_server/*"],
   }

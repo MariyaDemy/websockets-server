@@ -1,4 +1,4 @@
-import WebSocket from "ws";
+import WebSocket from 'ws';
 interface User {
   index: number;
   name: string;
@@ -92,17 +92,17 @@ type Winner = {
 };
 
 type addUserToRoomData = {
-  indexRoom:number;
-}
+  indexRoom: number;
+};
 
 type Player = {
-  name:string,
-  index:number,
-}
+  name: string;
+  index: number;
+};
 
 type Game = {
-  idGame:number,
-  players: Player[],
+  idGame: number;
+  players: Player[];
 };
 
 export {
