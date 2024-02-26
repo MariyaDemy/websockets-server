@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "NodeNext",
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "NodeNext",
+      "skipLibCheck": true,
+      "strict": true,
+      "noImplicitAny": true,
+      "strictPropertyInitialization": false,
+      "noEmit": true,
+      "allowImportingTsExtensions": true
+    },
+    "include": ["src/ws_server/*"],
+    "exclude": ["node-modules", "src/http_server/*"],
+  }
